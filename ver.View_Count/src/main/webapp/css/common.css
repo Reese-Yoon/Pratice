@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+body{
+  font-size : small;
+}
+h1 {
+  boader-left-style : solid;
+  border-left-width : 20px;
+  border-left-color : black;
+  padding-left : 10px;
+  
+}
