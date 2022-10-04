@@ -52,7 +52,7 @@
    	  req.setAttribute("exception", e);
     	req.getRequestDispatcher("/error.jsp").forward(req, resp);
    }
-   
+  ```
    
  - /webapp/WEB-INF/web.html 변경
    - servlet경로를 정해준 방법은 2가지가 있다.
