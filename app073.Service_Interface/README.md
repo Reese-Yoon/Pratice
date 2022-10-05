@@ -2,7 +2,7 @@
 - 서비스 객체에 인터페이스 적용하여 서비스 객체를 교체하기 쉽게 만들기
 - DefaultXXXX : 인터페이스를 받는 구현체
   - XXXX : 인터페이스 
------------------
+--------------------------------------------------------------------
 ###  작업내용
  * 1단계
   - BoardService 객체를 인터페이스와 구현체로 분리한다.
@@ -19,12 +19,11 @@
  * 3단계
   - 서비스 객체를 준바할 때 샐호 생성한 구현체를 사용한다.
   - com.bitcamp.board.listener.ContextLoaderListener 클래스 변경
-  - ```
+  ```
   ctx.setAttribute("boardService", new DefaultBoardService(boardDao));
   ctx.setAttribute("memberService", new DefaultMemberService(memberDao));
-
-```
-```
+  ```
+ --------------------------------------------------------------------
 ### 개념정리
 ![](https://velog.velcdn.com/images/hyun5no/post/712d3dfe-83da-47b1-afd8-d04dfaca2bb3/image.jpg)
  
