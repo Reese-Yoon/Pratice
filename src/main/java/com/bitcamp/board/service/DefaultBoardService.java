@@ -1,23 +1,36 @@
 package com.bitcamp.board.service;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import com.bitcamp.board.dao.BoardDao;
 import com.bitcamp.board.domain.AttachedFile;
 import com.bitcamp.board.domain.Board;
-import com.bitcamp.sql.DataSource;
 
+@Component
 public class DefaultBoardService implements BoardService {
-  DataSource ds;
+
+  PlatformTransactionManager txManager; 
   BoardDao boardDao;
 
-  public DefaultBoardService(BoardDao boardDao, DataSource ds) {
+  public DefaultBoardService(BoardDao boardDao, PlatformTransactionManager txManager) {
+    System.out.println("DefaultBoardService() 호출됨!");
     this.boardDao = boardDao;
-    this.ds = ds;
+    this.txManager = txManager;
   }
 
   @Override
   public void add(Board board) throws Exception {
-    ds.getConnection().setAutoCommit(false);
+
+    // (Spring의) 트랜잭션 동작 방법을 정의한다! 
+    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+    def.setName("tx1");
+    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+    TransactionStatus status = txManager.getTransaction(def);
     try {
       // 1) 게시글 등록
       if (boardDao.insert(board) == 0) {
@@ -26,20 +39,23 @@ public class DefaultBoardService implements BoardService {
 
       // 2) 첨부파일 등록
       boardDao.insertFiles(board);
-      ds.getConnection().commit();
+      txManager.commit(status);
 
     } catch (Exception e) {
-      ds.getConnection().rollback();
+      txManager.rollback(status);
       throw e;
-
-    } finally {
-      ds.getConnection().setAutoCommit(true);
     }
   }
 
   @Override
   public boolean update(Board board) throws Exception {
-    ds.getConnection().setAutoCommit(false);
+    // (Spring의) 트랜잭션 동작 방법을 정의한다! 
+    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+    def.setName("tx1");
+    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+    TransactionStatus status = txManager.getTransaction(def);
+
     try {
       // 1) 게시글 변경
       if (boardDao.update(board) == 0) {
@@ -48,15 +64,12 @@ public class DefaultBoardService implements BoardService {
       // 2) 첨부파일 추가
       boardDao.insertFiles(board);
 
-      ds.getConnection().commit();
+      txManager.commit(status);
       return true;
 
     } catch (Exception e) {
-      ds.getConnection().rollback();
+      txManager.rollback(status);
       throw e;
-
-    } finally {
-      ds.getConnection().setAutoCommit(true);
     }
   }
 
@@ -72,7 +85,12 @@ public class DefaultBoardService implements BoardService {
 
   @Override
   public boolean delete(int no) throws Exception {
-    ds.getConnection().setAutoCommit(false);
+    // (Spring의) 트랜잭션 동작 방법을 정의한다! 
+    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+    def.setName("tx1");
+    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+    TransactionStatus status = txManager.getTransaction(def);
     try {
       // 1) 첨부파일 삭제
       boardDao.deleteFiles(no);
@@ -80,16 +98,12 @@ public class DefaultBoardService implements BoardService {
       // 2) 게시글 삭제
       boolean result = boardDao.delete(no) > 0;
 
-      ds.getConnection().commit();
-
+      txManager.commit(status);
       return result;
 
     } catch (Exception e) {
-      ds.getConnection().rollback();
+      txManager.rollback(status);
       throw e;
-
-    } finally {
-      ds.getConnection().setAutoCommit(true);
     }
   }
 

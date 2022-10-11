@@ -4,15 +4,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.stereotype.Component;
 import com.bitcamp.board.domain.Member;
-import com.bitcamp.sql.DataSource;
 
+@Component
 public class MariaDBMemberDao implements MemberDao {
 
   DataSource ds;
 
-  // DAO가 사용할 의존 객체 Connection을 생성자의 파라미터로 받는다.
   public MariaDBMemberDao(DataSource ds) {
+    System.out.println("MariaDBMember() 객체 생성!");
     this.ds = ds;
   }
 

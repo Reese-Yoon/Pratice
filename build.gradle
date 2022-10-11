@@ -24,6 +24,11 @@ dependencies {
     // JSTL 명세를 구현한 라이브러리
     implementation 'javax.servlet:jstl:1.2'
     
+    // Spring Context 라이브러리
+    implementation 'org.springframework:spring-context:5.3.23'
+    
+    // Spring-jdbc 라이브러리
+    implementation 'org.springframework:spring-jdbc:5.3.23'    
     // multipart/form-data 형식의 데이터를 처리하는 라이브러리
     //implementation 'commons-fileupload:commons-fileupload:1.4'
     
